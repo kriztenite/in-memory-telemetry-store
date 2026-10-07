@@ -1,0 +1,38 @@
+
+target_compile_optio0
+target_compile_optio0
+
+# Build directories
+gcm.cache/
+build/
+cmake-build-*/
+out/
+Debug/
+Release/
+
+# Compiled objects and libraries
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# IDE and editor files
+*.swp
+
+# Generated files
+*.pdb
+*.ilk
+*.pch
+*.gch

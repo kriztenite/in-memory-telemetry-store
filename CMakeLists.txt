@@ -7,14 +7,13 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# # Set C++ module support explicitly
-# set(CMAKE_CXX_SCAN_FOR_MODULES ON)
-
 # Define the executable output name and source files
 add_executable(memory_store
-src/main.cpp
+    src/main.cpp
+    src/Store.cpp
 )
 
+target_include_directories(memory_store PRIVATE include)
 
 # Pass the GCC-specific -fmodules flag if using GCC
 target_compile_options(memory_store PRIVATE

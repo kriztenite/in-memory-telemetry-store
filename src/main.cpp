@@ -1,29 +1,6 @@
 // main.cpp
+#include "Store.hpp"
 #include <iostream>
-#include <optional>
-#include <string>
-#include <unordered_map>
-
-class Store {
-public:
-  void put(const std::string &key, const std::string &value) {
-    data_[key] = value;
-  }
-
-  std::optional<std::string> get(const std::string &key) const {
-    auto it = data_.find(key);
-
-    if (it == data_.end()) {
-      return std::nullopt;
-    }
-    return it->second;
-  }
-
-  void remove(const std::string &key) { data_.erase(key); }
-
-private:
-  std::unordered_map<std::string, std::string> data_;
-};
 
 int main() {
   Store store;

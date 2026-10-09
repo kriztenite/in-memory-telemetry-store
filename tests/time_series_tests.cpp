@@ -31,5 +31,14 @@ int main() {
   assert(out_of_order[1].timestamp_seconds == 200);
   assert(out_of_order[2].timestamp_seconds == 300);
 
+  auto range = series.get_samples_between("sensor_3", 150, 300);
+
+  assert(range.size() == 2);
+  assert(range[0].timestamp_seconds == 200);
+  assert(range[1].timestamp_seconds == 300);
+
+  auto reversed_range = series.get_samples_between("sensor_3", 300, 150);
+  assert(reversed_range.empty());
+
   std::cout << "All TimeSeries tests passed\n";
 }

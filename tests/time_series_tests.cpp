@@ -40,5 +40,21 @@ int main() {
   auto reversed_range = series.get_samples_between("sensor_3", 300, 150);
   assert(reversed_range.empty());
 
+  series.append("sensor_4", 100, 10.0);
+  series.append("sensor_4", 200, 20.0);
+  series.append("sensor_4", 300, 30.0);
+
+  const auto removed = series.prune_before("sensor_4", 200);
+
+  assert(removed == 1);
+
+  auto kept = series.get_samples("sensor_4");
+  assert(kept.size() == 2);
+  assert(kept[0].timestamp_seconds == 200);
+  assert(kept[1].timestamp_seconds == 300);
+
+  // A missing sensor has nothing to prune.
+  assert(series.prune_before("unknown-sensor", 200) == 0);
+
   std::cout << "All TimeSeries tests passed\n";
 }

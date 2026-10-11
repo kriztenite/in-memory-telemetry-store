@@ -35,6 +35,16 @@ target_include_directories(time_series_tests PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_test(NAME TimeSeriesTests COMMAND time_series_tests)
 
+# Target LruCache
+add_executable(lru_cache_tests tests/lru_cache_tests.cpp src/LruCache.cpp)
+target_include_directories(lru_cache_tests PRIVATE include)
+add_test(NAME LruCacheTests COMMAND lru_cache_tests)
+
+#Target PointerList
+add_executable(pointer_list_tests tests/pointer_list_tests.cpp src/PointerList.cpp)
+target_include_directories(pointer_list_tests PRIVATE include)
+add_test(NAME PointerListTests COMMAND pointer_list_tests)
+
 
 
 

@@ -45,6 +45,12 @@ add_executable(pointer_list_tests tests/pointer_list_tests.cpp src/PointerList.c
 target_include_directories(pointer_list_tests PRIVATE include)
 add_test(NAME PointerListTests COMMAND pointer_list_tests)
 
+#Target concurrency test
+find_package(Threads REQUIRED)
+add_executable(store_concurrency_tests tests/store_concurrency_tests.cpp src/Store.cpp)
+target_include_directories(store_concurrency_tests PRIVATE include)
+target_link_libraries(store_concurrency_tests PRIVATE Threads::Threads)
+add_test(NAME StoreConcurrencyTests COMMAND store_concurrency_tests)
 
 
 

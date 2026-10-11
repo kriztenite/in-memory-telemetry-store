@@ -1,7 +1,7 @@
 // Store.cpp
 #include "Store.hpp"
 #include <mutex>
-// #include <shared_mutex>
+#include <shared_mutex>
 
 void Store::put(const std::string &key, const std::string &value) {
   std::unique_lock lock(mutex_);

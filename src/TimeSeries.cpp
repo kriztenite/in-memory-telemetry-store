@@ -1,9 +1,13 @@
 #include "TimeSeries.hpp"
 #include <algorithm>
+#include <mutex>
 
 // Add a sample to the sensor's vector
 void TimeSeries::append(const std::string &sensor_id,
                         std::int64_t timestamp_seconds, double value) {
+
+  std::unique_lock lock(mutex_);
+
   auto &sensor_samples = samples_[sensor_id];
 
   const auto comes_before_timestamp = [](const Sample &sample,
@@ -20,6 +24,9 @@ void TimeSeries::append(const std::string &sensor_id,
 // Return a sensor reading or empty vector if it has no reading
 std::vector<Sample>
 TimeSeries::get_samples(const std::string &sensor_id) const {
+
+  std::shared_lock lock(mutex_);
+
   auto it = samples_.find(sensor_id);
 
   if (it == samples_.end())
@@ -33,6 +40,9 @@ std::vector<Sample>
 TimeSeries::get_samples_between(const std::string &sensor_id,
                                 std::int64_t start_seconds,
                                 std::int64_t end_seconds) const {
+
+  std::shared_lock lock(mutex_);
+
   if (start_seconds > end_seconds)
     return {};
 
@@ -60,6 +70,8 @@ TimeSeries::get_samples_between(const std::string &sensor_id,
 // Remove samples with timestamps less than cutoff keeping the cutoff
 std::size_t TimeSeries::prune_before(const std::string &sensor_id,
                                      std::int64_t cutoff_seconds) {
+
+  std::unique_lock lock(mutex_);
 
   auto it = samples_.find(sensor_id);
 

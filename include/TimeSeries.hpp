@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -26,5 +27,6 @@ public:
                            std::int64_t cutoff_seconds);
 
 private:
+  mutable std::shared_mutex mutex_;
   std::unordered_map<std::string, std::vector<Sample>> samples_;
 };

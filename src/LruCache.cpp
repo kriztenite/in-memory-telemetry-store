@@ -43,8 +43,8 @@ void LruCache::evict_least_recent() {
   }
 
   Node *new_tail = tail_->previous;
-  new_tail->next.reset();
   tail_ = new_tail;
+  new_tail->next.reset();
 }
 
 void LruCache::put(const std::string &key, const std::string &value) {

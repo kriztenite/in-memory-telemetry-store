@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.30)
 project(memory_store LANGUAGES CXX)
 
 
-# Set the C++ Standard to c++23 and require it
-set(CMAKE_CXX_STANDARD 23)
+# Set the C++ Standard to c++20 and require it
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -65,3 +65,7 @@ target_include_directories(expiration-worker-tests PRIVATE include)
 target_link_libraries(expiration-worker-tests PRIVATE Threads::Threads)
 add_test(NAME ExpirationWorkerTests COMMAND expiration-worker-tests)
 
+# Target Benchmark
+add_executable( store-benchmark tests/benchmark.cpp src/Store.cpp src/TimeSeries.cpp src/LruCache.cpp)
+target_include_directories(store-benchmark PRIVATE include)
+target_link_libraries(store-benchmark PRIVATE Threads::Threads)

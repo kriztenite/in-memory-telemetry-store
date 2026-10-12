@@ -5,6 +5,7 @@ target_compile_optio0
 # Build directories
 gcm.cache/
 build/
+build-*/
 cmake-build-*/
 out/
 Debug/

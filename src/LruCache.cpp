@@ -49,6 +49,8 @@ void LruCache::evict_least_recent() {
 
 void LruCache::put(const std::string &key, const std::string &value) {
 
+  std::lock_guard lock(mutex_);
+
   if (capacity_ == 0)
     return;
 
@@ -80,6 +82,9 @@ void LruCache::put(const std::string &key, const std::string &value) {
 }
 
 std::optional<std::string> LruCache::get(const std::string &key) {
+
+  std::lock_guard lock(mutex_);
+
   auto found = index_.find(key);
 
   if (found == index_.end())

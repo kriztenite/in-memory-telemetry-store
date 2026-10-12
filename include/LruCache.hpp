@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <list>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -16,6 +17,8 @@ public:
   std::optional<std::string> get(const std::string &key);
 
 private:
+  std::mutex mutex_;
+
   struct Node {
     Node(std::string key, std::string value);
 

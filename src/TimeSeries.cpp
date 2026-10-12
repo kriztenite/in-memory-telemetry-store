@@ -92,3 +92,28 @@ std::size_t TimeSeries::prune_before(const std::string &sensor_id,
   sensor_samples.erase(sensor_samples.begin(), first_to_keep);
   return removed;
 }
+
+// Prunes all sensor
+std::size_t TimeSeries::prune_all_before(std::int64_t cutoff_seconds) {
+
+  std::unique_lock lock(mutex_);
+
+  std::size_t total_removed{0};
+
+  for (auto &[sensor_id, sensor_samples] : samples_) {
+    (void)sensor_id; // The key isn't needed for pruning.
+
+    auto first_to_keep = std::lower_bound(
+        sensor_samples.begin(), sensor_samples.end(), cutoff_seconds,
+        [](const Sample &sample, std::int64_t timestamp) {
+          return sample.timestamp_seconds < timestamp;
+        });
+
+    total_removed +=
+        static_cast<std::size_t>(first_to_keep - sensor_samples.begin());
+
+    sensor_samples.erase(sensor_samples.begin(), first_to_keep);
+  }
+
+  return total_removed;
+}

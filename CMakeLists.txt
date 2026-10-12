@@ -52,34 +52,16 @@ target_include_directories(store_concurrency_tests PRIVATE include)
 target_link_libraries(store_concurrency_tests PRIVATE Threads::Threads)
 add_test(NAME StoreConcurrencyTests COMMAND store_concurrency_tests)
 
+# Target lru concurrency test
+add_executable(lru_cache_concurrency_tests tests/lru_cache_concurrency_tests.cpp src/LruCache.cpp)
+target_include_directories(lru_cache_concurrency_tests PRIVATE include)
+target_link_libraries(lru_cache_concurrency_tests PRIVATE Threads::Threads)
+add_test(NAME LruCacheConcurrencyTest COMMAND lru_cache_concurrency_tests)
 
+# Target ExpirationWorker 
+add_executable(expiration-worker-tests 
+    tests/expiration_worker_tests.cpp src/ExpirationWorker.cpp src/TimeSeries.cpp)
+target_include_directories(expiration-worker-tests PRIVATE include)
+target_link_libraries(expiration-worker-tests PRIVATE Threads::Threads)
+add_test(NAME ExpirationWorkerTests COMMAND expiration-worker-tests)
 
-# ####################################3
-# cmake_minimum_required(VERSION 3.30)
-# project(StoreProject LANGUAGES CXX)
-#
-# # require c++ 23
-# set(CMAKE_CXX_STANDARD 23)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_CXX_EXTENSIONS OFF)
-#
-# # Include directories for headers
-# include_directories(include)
-#
-# # Build the main executable
-# add_executable(memory_store
-#     src/Store.cpp
-#     src/main.cpp
-# )
-#
-# # Enable CTest framework
-# enable_testing()
-#
-# # Build the test executable
-# add_executable(store_tests
-#     src/Store.cpp
-#     tests/store_tests.cpp
-# )
-#
-# # Register the test executable with CTest
-# add_test(NAME StoreTests COMMAND store_tests)

@@ -37,3 +37,4 @@ compile_commands.json
 *.ilk
 *.pch
 *.gch
+std.o \  gcm.cache/

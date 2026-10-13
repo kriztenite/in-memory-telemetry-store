@@ -11,30 +11,34 @@ worker that removes expired time-series samples.
 
 ## Features & Architechture
 
-```
+```mermaid
 graph TD
-    %% Client Layer / Threads
-    Client[Client / Threads] -->|Concurrent Reads / Writes| StoreMutex[Shared Mutex]
-    Client -->|Concurrent Read / Write| TimeSeriesMutex[Shared Mutex]
-    Client -->|Exclusive Lock| CacheMutex[Mutex]
+    %% Client threads and synchronization
+    Client[Client Threads] -->|Read: shared lock| StoreMutex[Store shared_mutex]
+    Client -->|Write: exclusive lock| StoreMutex
+    Client -->|Read: shared lock| TimeSeriesMutex[TimeSeries shared_mutex]
+    Client -->|Write: exclusive lock| TimeSeriesMutex
+    Client -->|Read or write: exclusive lock| CacheMutex[Cache mutex]
 
-    %% Core Components
+    %% Core components
     subgraph Core Components
-        Store[Store <br/> Key-Value Store] -->|std::unordered_map| KVData[(String Data)]
-        
-        TimeSeries[TimeSeries <br/> Telemetry Data] -->|std::unordered_map & lower_bound| TSData[(Vector of Samples)]
-        
-        LruCache[LruCache <br/> Capacity-Limited Cache] -->|std::unique_ptr owner| MapIndex[Hash Map Index]
-        LruCache -->|Non-owning raw pointers| DList[Custom Doubly Linked List]
+        Store[Store<br/>Key-value store] -->|std::unordered_map&lt;Key, Value&gt;| KVData[(Key-value data)]
+
+        TimeSeries[TimeSeries<br/>Telemetry data] -->|std::unordered_map&lt;Key, std::vector&lt;Sample&gt;&gt;| TSData[(Samples sorted by timestamp)]
+        TSData -->|std::lower_bound on sorted samples| TSLookup[Timestamp lookup]
+
+        LruCache[LruCache<br/>Capacity-limited cache] -->|Owns entries with std::unique_ptr| MapIndex[Hash map index]
+        LruCache -->|Non-owning raw pointers| DList[Custom doubly linked list]
     end
 
-    %% Background Expiration Worker
+    %% Background expiration worker
     subgraph Background Worker
-        Worker[ExpirationWorker] -->|Uses std::jthread & condition_variable| TSPrune[Prunes Stale Samples]
+        Worker[ExpirationWorker<br/>std::jthread + std::condition_variable]
+        Worker -->|Exclusive lock via TimeSeries mutex| TSPrune[Prunes stale samples]
         TSPrune --> TimeSeries
     end
 
-    %% Mutex Protections
+    %% Mutex protections
     StoreMutex --> Store
     TimeSeriesMutex --> TimeSeries
     CacheMutex --> LruCache
@@ -43,6 +47,7 @@ graph TD
     style TimeSeries fill:#bbf,stroke:#333,stroke-width:2px
     style LruCache fill:#bfb,stroke:#333,stroke-width:2px
     style Worker fill:#ff9,stroke:#333,stroke-width:2px
+
 ```
 
 * **`Store`**: A thread-safe string-to-string key-value store protected by a reader-writer mutex (`std::shared_mutex`) enabling concurrent reads with exclusive writes.
